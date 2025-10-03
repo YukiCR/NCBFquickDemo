@@ -9,6 +9,13 @@ This project implements a complete Neural Control Barrier Function (NCBF) system
 - **Learned Safety Certificates**: Neural networks trained to distinguish safe from unsafe states
 - **Real-time Safety Filtering**: Live constraint enforcement during robot navigation
 
+<!-- include the pictures in /pre here -->
+![data genaration and visualization](https://github.com/YukiCR/NCBFquickDemo/blob/master/pre/training_data_new_clean_ratio.png)
+
+![ncbf training result](https://github.com/YukiCR/NCBFquickDemo/blob/master/pre/ncbf_visualization_equal_size_highres.png)
+
+![safe control example](https://github.com/YukiCR/NCBFquickDemo/blob/master/pre/sim_result.png)
+
 
 ## 📁 File Structure
 
