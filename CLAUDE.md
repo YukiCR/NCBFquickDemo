@@ -95,6 +95,51 @@ CBFFunction (ABC)
 CBFFilter (safety enforcement using analytical QP solution)
 ```
 
+### File structure
+```
+/home/chengrui/wk/NCBFquickDemo/
+├── work/                           # Main implementation directory
+│   ├── models/                     # Robot models and control systems
+│   │   ├── control_affine_system.py # Abstract base class for control-affine systems
+│   │   ├── unicycle_model.py       # Unicycle robot with PD control and visualization
+│   │   └── __pycache__/            # Compiled Python files
+│   ├── configs/                    # Configuration management
+│   │   ├── unicycle_config.py      # Unicycle-specific parameters and settings
+│   │   └── __pycache__/            # Compiled Python files
+│   ├── safe_control/               # Safety control and CBF implementation
+│   │   ├── cbf_function.py         # Abstract base class for CBF functions
+│   │   ├── cbf_filter.py           # CBF safety filter with Lie derivatives
+│   │   ├── handwritten_cbf.py      # Handwritten CBF implementations
+│   │   └── __pycache__/            # Compiled Python files
+│   ├── ncbf/                       # Neural CBF implementation
+│   │   ├── models/                 # Neural network models
+│   │   │   └── ncbf.py            # Neural CBF implementation
+│   │   ├── configs/                # NCBF configuration
+│   │   │   └── ncbf_config.py     # network architecture settings and hyperparameters
+│   │   ├── maps/                   # Map generation and management
+│   │   │   ├── map_manager.py     # Map loading and utilities
+│   │   │   ├── map_generator.py   # Random map generation
+│   │   │   ├── map_generation.py  # Map data structures
+│   │   │   ├── generate_training_data.py # Training data generation
+│   │   │   ├── visualize_training_data.py # Training data visualization
+│   │   │   └── map_files/         # Pre-generated map files
+│   │   ├── training/               # NCBF training infrastructure
+│   │   │   ├── train_ncbf.py      # Main training script
+│   │   │   ├── ncbf_trainer.py    # Training loop implementation
+│   │   │   ├── ncbf_visualization_tool.py # Model visualization
+│   │   │   └── results/           # Training outputs and visualizations
+│   │   └── weights/                # Trained model weights
+│   ├── sim/                        # Control simulation
+│   │   ├── sim_ncbf.py            # Main simulation script
+│   │   └── results/               # Simulation outputs
+│   └── test/                       # Testing and validation
+├── pre/                           # Pre-generated results and figures
+├── reference/                     # Reference materials
+│   ├── mcode/                     # MATLAB reference implementations
+│   └── papers/                    # Academic papers and documentation
+└── CLAUDE.md                      # Project guidance for AI assistants
+```
+
 ### Key Components
 
 **System Layer** (`/work/models/`):
@@ -250,7 +295,20 @@ L_reg = ||∇h(x)||²  # Modified to make ||∇h(x)|| ≈ 1 for SDF-like behavio
 - Analytical QP solution handles weighted norm MᵀM for proper constraint formulation
 - Control constraints still applied through unicycle's `update_state` method (norm truncation)
 
+##  Plan and Todos
+- we manage our plan and our implementation process in TODO.md , when we continue with a project, you should check it to understand the process
+- we manage TODO.md hierarchically, take notes on long term general plans and short term detailed plans
+- for things not implemented yet, leave a `[ ]` for that issue
+- if that is done, check `[ ]` to be `[x]`
+
+## Current work
+### Learn NCBF with only safe data
+For many cases, what we have is safe demonstrations and we cannot sample in the state space to get training data with safe label. As a result, we need to learn the safety concept with only safe data.
+
 ## Future work
-1. train NCBF with safe data only : learn NCBF with safe demonstrations
-2. learn latent space CBF : use a encoder to encode high-dimensional input (like vision input), than train NCBF that uses the latent vector as input
-3. learn task-conditioned NCBF : safety should be context dependent, use natural language decription as condition to judge whether a state is safe
+1. learn latent space CBF : use a encoder to encode high-dimensional input (like vision input), than train NCBF that uses the latent vector as input
+2. learn task-conditioned NCBF : safety should be context dependent, use natural language decription as condition to judge whether a state is safe
+
+## Important Notes
++ Always run the project with conda environment `latentSafety`
++ When there's an error of import or some attribute does not exists, always first try to load the module / instance we need properly. Be careful with fallback hackings since they cannot fix the fundamental problem.

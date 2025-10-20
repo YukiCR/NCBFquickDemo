@@ -79,6 +79,14 @@ class NCBFConfig:
     contour_levels: int = 20  # Number of contour levels
     evaluation_theta: float = 0.0  # Fixed theta for 2D contour visualization
 
+    # Conservative NCBF parameters (new)
+    conservative_weight: float = 0.1  # Weight for conservative loss
+    temperature: float = 0.1  # Temperature parameter for log-sum-exp
+    num_random_controls: int = 10  # Number of random controls to sample
+    enable_pretraining: bool = False  # Enable two-phase training
+    pretrain_epochs: int = 0  # Number of pretraining epochs
+    pretrain_lr: float = 0.001  # Learning rate for pretraining
+
     def __post_init__(self):
         """Validate configuration parameters."""
         if self.input_dim <= 0:

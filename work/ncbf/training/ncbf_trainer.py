@@ -318,8 +318,6 @@ class NCBFTrainer:
             grad_h = self.ncbf.grad_h(states)  # [batch_size, state_dim]
 
             # Compute f(x) and g(x) from unicycle dynamics
-            # We need to implement dynamics computation based on unicycle model
-            # For now, we'll use a simplified approach
             barrier_loss = self._compute_barrier_loss(states, h_values, grad_h)
         else:
             barrier_loss = torch.tensor(0.0, device=self.device)
