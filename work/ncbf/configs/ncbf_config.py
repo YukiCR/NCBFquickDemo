@@ -40,7 +40,7 @@ class NCBFConfig:
     # Loss function weights
     classification_weight: float = 1.0  # Weight for classification loss
     barrier_weight: float = 0.1  # Weight for barrier derivative loss
-    regularization_weight: float = 0.02  # Weight for L2 regularization
+    regularization_weight: float = 0.05 #0.02  # Weight for L2 regularization
     margin: float = 0.2  # Margin for hinge loss in classification
 
     # Training data parameters
@@ -54,7 +54,7 @@ class NCBFConfig:
 
     # Validation parameters
     validation_split: float = 0.2  # Fraction of data for validation
-    early_stopping_patience: int = 50  # Epochs to wait before early stopping
+    early_stopping_patience: int = 150  # Epochs to wait before early stopping
 
     # Optimization parameters
     optimizer: str = 'adam'  # 'adam', 'sgd', 'rmsprop'

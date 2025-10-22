@@ -21,7 +21,7 @@ class EnhancerConfig:
     input_dataset_path: str
     method: str = 'ad'
     target_ratio: float = 0.3
-    workspace_padding: float = 0.5
+    workspace_padding: float = 0.0
     random_seed: int = 42
 
     def __post_init__(self):
@@ -56,9 +56,9 @@ class ADConfig(EnhancerConfig):
     """
     ad_method: str = 'ocsvm'
     kernel: str = 'rbf'
-    nu: float = 0.0 # all data is normal
-    gamma: str = 'scale'
-    threshold_quantile: float = 0.05
+    nu: float = 0.001 # all data is normal
+    gamma: str = 8.0 # 'scale' or 'auto' or float value
+    threshold_quantile: float = 0.00005
     use_full_state: bool = False
     # placeholders for other AD methods, currently we only use OCSVM
     contamination: float = 0.1

@@ -1,4 +1,0 @@
-source ~/miniconda3/etc/profile.d/conda.sh && conda activate latentSafety && cd /home/chengrui/wk/NCBFquickDemo/work/ncbf/enhancement && python tests/create_enhanced_dataset.py
-
-
-source ~/miniconda3/etc/profile.d/conda.sh && conda activate latentSafety && cd /home/chengrui/wk/NCBFquickDemo/work/ncbf/maps && python visualize_training_data.py --training_data /home/chengrui/wk/NCBFquickDemo/work/ncbf/maps/map_files/map1/training_data_ad_enhanced.h5 --map /home/chengrui/wk/NCBFquickDemo/work/ncbf/maps/map_files/map1/map1.json --output /home/chengrui/wk/NCBFquickDemo/work/ncbf/maps/map_files/map1/ad_enhanced_visualization.png

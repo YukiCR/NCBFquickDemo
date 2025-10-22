@@ -85,12 +85,24 @@ Learn Neural Control Barrier Functions (NCBF) using only safe demonstration data
 All three methods follow the same enhancement pipeline: load safe-only dataset → fit enhancer to safe data → generate pseudo-negative states → create balanced dataset → save enhanced dataset for training.
 
 #### Code structure
-1. Base class: the ABC of dataset enhacners, the base class that defines the basic method to realize
+1. Base class: the ABC of dataset enhacners, the base class that defines the basic methods to realize
 2. Config class: a config class that manages the parameters of the dataset enhancer
 3. Sub classes: `ComplementEnhancer`, `iDBFEnhancer` and `ADEnhancer` will inherit the base class to do the enhancing procedure.
 
 #### Implementation details
 <!-- this is where you should note the implementation details -->
+- [x] implement base class design and utils ( see work/ncbf/enhancement/enhancer_base.py and enhancer_utils.py for implementation)
+- [ ] implement AD method
+  - [x] implement `ADEnhancer` class (see work/ncbf/enhancement/ad_enhancer.py)
+  - [x] do basic test and tuning
+  - [x] develop general command line tool for all enhancement methods and test it for AD.
+    - [x] test the command line tool for AD and saved the commands in command.md 
+  - [ ] improve for better performance and general use.
+    - [ ] Down sampling our data via spatial uniformization (filter out the artificial density transition of safe-only dataset).
+      - motivation: our data generation has a obstacle concentration strategy: in map_manager.py code we deliberately creates concentrated sampling around obstacles. And the OCSVM may interprets density drops as anomaly boundaries
+      - method:   1. Divide workspace into spatial cells (grid or Voronoi) 2. Count safe states per cell 3. Sample equal number from each cell (or cap maximum per cell) 4. Result: Uniform spatial density regardless of original sampling
+- [ ] implement complement method
+- [ ] implement iDBF method
 
 **Status**: Future work - advanced approaches for generating pseudo-negative data
 

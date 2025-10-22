@@ -52,9 +52,9 @@ class NCBFSimulation:
         if map_file is None:
             map_file = "/home/chengrui/wk/NCBFquickDemo/work/ncbf/maps/map_files/map1/map1.json"
         if ncbf_weights is None:
-            ncbf_weights = "/home/chengrui/wk/NCBFquickDemo/work/ncbf/weights/train_3000ep_largenn/best_model.pt"
+            ncbf_weights = "/home/chengrui/wk/NCBFquickDemo/work/ncbf/weights/ad_enhanced_training/best_model.pt"
         if ncbf_config is None:
-            ncbf_config = "/home/chengrui/wk/NCBFquickDemo/work/ncbf/weights/train_3000ep_largenn/training_config.json"
+            ncbf_config = "/home/chengrui/wk/NCBFquickDemo/work/ncbf/weights/ad_enhanced_training/training_config.json"
 
         # Load map
         print(f"Loading map from: {map_file}")
