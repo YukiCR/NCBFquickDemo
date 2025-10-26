@@ -27,6 +27,11 @@ from ncbf.models.ncbf import NCBF
 from ncbf.configs.ncbf_config import NCBFConfig
 from ncbf.maps.map_manager import load_map, NCBFMap
 
+isUSING_TEX = True  # Set to True if LaTeX is installed and configured
+plt.rcParams['text.usetex'] = isUSING_TEX
+if isUSING_TEX:
+    plt.rcParams['font.family'] =  'Times New Roman'
+
 
 class NCBFSimulation:
     """
@@ -333,7 +338,8 @@ class NCBFSimulation:
         ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5)
         ax.set_xlabel('X [m]', fontsize=12)
         ax.set_ylabel('Y [m]', fontsize=12)
-        ax.set_title('Robot Trajectory with Speed Visualization', fontsize=14, fontweight='bold')
+        # Uncomment to show the title
+        # ax.set_title('Robot Trajectory with Speed Visualization', fontsize=14, fontweight='bold')
         ax.legend(loc='upper left', framealpha=0.9)
 
     def _plot_combined_safety_analysis(self, ax, distances, h_values, total_time, config):
@@ -351,12 +357,16 @@ class NCBFSimulation:
 
         # Plot effective distance on left axis
         line1 = ax.plot(time_array, effective_distances, 'b-', linewidth=2,
-                       label='Distance to obstacles (minus safety radius)')
+                       label='Distance to obstacles')
         ax.axhline(y=0, color='red', linestyle='--', linewidth=1, alpha=0.7, label='Safety boundary (distance=0)')
 
         # Plot NCBF values on right axis
-        line2 = ax2.plot(time_array, h_values, 'g-', linewidth=2,
-                        label='NCBF value h(x)')
+        if not isUSING_TEX:
+            line2 = ax2.plot(time_array, h_values, 'g-', linewidth=2,
+                            label='NCBF value h(x)')
+        else:
+            line2 = ax2.plot(time_array, h_values, 'g-', linewidth=2,
+                            label=r'NCBF value $h(x)$')
         ax2.axhline(y=0, color='green', linestyle='--', linewidth=1, alpha=0.7, label='Safety boundary (h=0)')
 
         # Let matplotlib handle the scaling naturally (no forced alignment)
@@ -367,8 +377,12 @@ class NCBFSimulation:
         # Styling
         ax.set_xlabel('Time [s]', fontsize=12)
         ax.set_ylabel('Distance [m]', fontsize=12, color='b')
-        ax2.set_ylabel('NCBF value h(x)', fontsize=12, color='g')
-        ax.set_title('Safety Analysis: Distance and NCBF Values', fontsize=14, fontweight='bold')
+        if not isUSING_TEX:
+            ax2.set_ylabel('NCBF value h(x)', fontsize=12, color='g')
+        else:
+            ax2.set_ylabel(r'NCBF value $h(x)$', fontsize=12, color='g')
+        # Uncomment to show the title
+        # ax.set_title('Safety Analysis: Distance and NCBF Values', fontsize=14, fontweight='bold')
 
         # Combine legends
         lines = line1 + line2
@@ -524,8 +538,12 @@ class NCBFSimulation:
         """Plot control inputs over time."""
         time_array = np.linspace(0, total_time, len(controls))
 
-        ax.plot(time_array, controls[:, 0], 'r-', linewidth=2, label='Linear velocity (v)')
-        ax.plot(time_array, controls[:, 1], 'b-', linewidth=2, label='Angular velocity (ω)')
+        if not isUSING_TEX:
+            ax.plot(time_array, controls[:, 0], 'r-', linewidth=2, label='Linear velocity (v)')
+            ax.plot(time_array, controls[:, 1], 'b-', linewidth=2, label='Angular velocity (ω)')
+        else:
+            ax.plot(time_array, controls[:, 0], 'r-', linewidth=2, label='Linear velocity ($v$)')
+            ax.plot(time_array, controls[:, 1], 'b-', linewidth=2, label='Angular velocity ($\omega$)')
         ax.axhline(y=config.max_control_norm, color='gray', linestyle='--', alpha=0.5)
         ax.axhline(y=-config.max_control_norm, color='gray', linestyle='--', alpha=0.5)
 

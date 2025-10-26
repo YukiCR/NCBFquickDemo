@@ -30,6 +30,11 @@ from ncbf.models.ncbf import NCBF
 from ncbf.configs.ncbf_config import NCBFConfig
 from ncbf.maps.map_manager import load_map, NCBFMap
 
+isUSING_TEX = True  # Set to True if LaTeX is installed and configured
+plt.rcParams['text.usetex'] = isUSING_TEX
+if isUSING_TEX:
+    plt.rcParams['font.family'] =  'Times New Roman'
+
 
 class NCBFVisualizationTool:
     """A reusable tool for loading and visualizing NCBF models."""
@@ -277,22 +282,40 @@ class NCBFVisualizationTool:
 
         # Create figure with 3 subplots - ensure equal sizing with GridSpec for precise control
         fig = plt.figure(figsize=(12, 4))
-        fig.suptitle(f'Neural CBF Visualization (θ = {theta:.2f})', fontsize=12)
+        if not isUSING_TEX:
+            fig.suptitle(f'Neural CBF Visualization (θ = {theta:.2f})', fontsize=12)
 
         # Use GridSpec to ensure equal widths for all subplots
         gs = fig.add_gridspec(1, 3, width_ratios=[1, 1, 1], wspace=0.3)
         axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
 
+        # tick interval of x and y axis
+        tick_interval = 1.0
+
         # Plot 1: Contour plot
         ax = axes[0]
         contour = ax.contour(X, Y, Z, levels=15, cmap='RdYlBu', linewidths=0.8)
-        ax.contourf(X, Y, Z, levels=15, cmap='RdYlBu', alpha=0.6)
+        contourf = ax.contourf(X, Y, Z, levels=15, cmap='RdYlBu', alpha=0.6)
         ax.clabel(contour, inline=True, fontsize=7, fmt='%.2f')
+
+        # Add colorbar for contour plot - use external axis to avoid size distortion
+        # Create a dedicated axis for colorbar that doesn't affect main subplot size
+        cbar1_ax = fig.add_axes([0.037, 0.15, 0.01, 0.7])  # [left, bottom, width, height]
+        cbar1 = fig.colorbar(contourf, cax=cbar1_ax)
+        if not isUSING_TEX:
+            cbar1.set_label('h(x)', fontsize=8, labelpad=2)
+        else:
+            cbar1.set_label(r'$h(x)$', fontsize=8, labelpad=2)
 
         # Note: Obstacles are NOT drawn in the left figure (contours only)
         # This allows clear visualization of the learned CBF structure
 
-        ax.set_title('NCBF h(x) Contours', fontsize=10)
+        # set the tick interval of x and y axis to be 1
+        ax.set_xticks(np.arange(np.floor(x_range[0]), np.ceil(x_range[1])+1, tick_interval))
+        ax.set_yticks(np.arange(np.floor(y_range[0]), np.ceil(y_range[1])+1, tick_interval))
+
+        # Uncomment here to show the title
+        # ax.set_title('NCBF h(x) Contours', fontsize=10)
         ax.set_xlabel('X [m]', fontsize=9)
         ax.set_ylabel('Y [m]', fontsize=9)
         ax.set_aspect('equal')
@@ -336,7 +359,12 @@ class NCBFVisualizationTool:
                 # Mark center
                 ax.plot(x, y, 'ko', markersize=3, alpha=0.9)
 
-        ax.set_title('NCBF Safety Boundary vs Real Obstacles', fontsize=10)
+        # set the tick interval of x and y axis to be 1
+        ax.set_xticks(np.arange(np.floor(x_range[0]), np.ceil(x_range[1])+1, tick_interval))
+        ax.set_yticks(np.arange(np.floor(y_range[0]), np.ceil(y_range[1])+1, tick_interval))
+
+        # Uncomment here to show the title
+        # ax.set_title('NCBF Safety Boundary vs Real Obstacles', fontsize=10)
         ax.set_xlabel('X [m]', fontsize=9)
         ax.set_ylabel('Y [m]', fontsize=9)
         ax.set_aspect('equal')
@@ -348,14 +376,15 @@ class NCBFVisualizationTool:
             from matplotlib.lines import Line2D
 
             legend_elements = [
-                Line2D([0], [0], color='blue', linewidth=3, linestyle='-', label='Learned h=0'),
+                Line2D([0], [0], color='blue', linewidth=3, linestyle='-', label='Learned Safety Boundary'),
                 Patch(facecolor='red', alpha=0.8, label='Obstacles'),
             ]
 
             # Add safety region to legend if safety_radius is provided
             if self.safety_radius is not None and self.safety_radius > 0:
-                legend_elements.insert(1, Patch(facecolor='orange', alpha=0.3,
-                                              label=f'Safety Region (+{self.safety_radius}m)'))
+                legend_elements.insert(2, Patch(facecolor='orange', alpha=0.3,
+                                            #   label=f'Safety Region (+{self.safety_radius}m)'))
+                                            label=f'Inflated Safe Region'))
 
             ax.legend(handles=legend_elements, loc='upper right', fontsize=8, framealpha=0.9)
 
@@ -383,7 +412,10 @@ class NCBFVisualizationTool:
         # Create a dedicated axis for colorbar that doesn't affect main subplot size
         cbar_ax = fig.add_axes([0.93, 0.15, 0.01, 0.7])  # [left, bottom, width, height]
         cbar = fig.colorbar(streamplot.lines, cax=cbar_ax)
-        cbar.set_label('||∇h||', fontsize=8, labelpad=2)
+        if not isUSING_TEX:
+            cbar.set_label('||∇h||', fontsize=8, labelpad=2)
+        else:
+            cbar.set_label(r'$\|\nabla h\|$', fontsize=8, labelpad=2)
 
         # Add obstacles to gradient plot for reference (without safety regions to avoid clutter)
         if obstacles:
@@ -394,7 +426,12 @@ class NCBFVisualizationTool:
                                            edgecolor='red', linewidth=1.5, alpha=0.8)
                 ax.add_patch(obstacle_circle)
 
-        ax.set_title('NCBF Gradient Flow Map ∇h(x)', fontsize=10)
+        # set the tick interval of x and y axis to be 1
+        ax.set_xticks(np.arange(np.floor(x_range[0]), np.ceil(x_range[1])+1, tick_interval))
+        ax.set_yticks(np.arange(np.floor(y_range[0]), np.ceil(y_range[1])+1, tick_interval))
+
+        # Uncomment here to show the title
+        # ax.set_title('NCBF Gradient Flow Map ∇h(x)', fontsize=10)
         ax.set_xlabel('X [m]', fontsize=9)
         ax.set_ylabel('Y [m]', fontsize=9)
         ax.set_aspect('equal')
@@ -405,9 +442,10 @@ class NCBFVisualizationTool:
         ax.set_ylim(y_range[0], y_range[1])
 
         # Add text info about gradient flow map
-        grad_info = f"Streamlines: ∇h flow\nColor: ||∇h|| magnitude\nDensity: {2.0}"
-        ax.text(0.02, 0.98, grad_info, transform=ax.transAxes, fontsize=8,
-                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        if not isUSING_TEX:
+            grad_info = f"Streamlines: ∇h flow\nColor: ||∇h|| magnitude\nDensity: {2.0}"
+            ax.text(0.02, 0.98, grad_info, transform=ax.transAxes, fontsize=8,
+                    verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
         if save_path:
             plt.savefig(save_path, dpi=150, bbox_inches='tight')

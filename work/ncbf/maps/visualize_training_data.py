@@ -20,6 +20,11 @@ from ncbf.maps import load_map, NCBFMap
 from configs.unicycle_config import UnicycleConfig
 import matplotlib.pyplot as plt
 
+isUSING_TEX = True  # Set to True if LaTeX is installed and configured
+plt.rcParams['text.usetex'] = isUSING_TEX
+if isUSING_TEX:
+    plt.rcParams['font.family'] =  'Times New Roman'
+
 
 def parse_arguments():
     """Parse command-line arguments."""
@@ -198,18 +203,24 @@ def visualize_training_data_cli(training_data_path: Path, map_path: Optional[Pat
 
         ax1.set_xlim(0, ncbf_map.workspace_size)
         ax1.set_ylim(0, ncbf_map.workspace_size)
-        ax1.set_xlabel('X Position (m)', fontsize=10)
-        ax1.set_ylabel('Y Position (m)', fontsize=10)
+        ax1.set_xlabel('X Position [m]', fontsize=10)
+        ax1.set_ylabel('Y Position [m]', fontsize=10)
         ax1.set_title('Training Data Distribution', fontsize=11, fontweight='bold')
         ax1.legend(fontsize=9, loc='upper right')
         ax1.grid(True, alpha=0.3)
         ax1.set_aspect('equal')
 
         # Add statistics info
-        info_text = (f"Training Data\n"
-                    f"Total: {num_samples:,}\n"
-                    f"Safe: {num_safe:,} ({100*actual_safe_ratio:.1f}%)\n"
-                    f"Unsafe: {num_unsafe:,} ({100*actual_unsafe_ratio:.1f}%)")
+        if not isUSING_TEX:
+            info_text = (#f"Training Data\n"
+                        f"Total: {num_samples:,}\n"
+                        f"Safe: {num_safe:,} ({100*actual_safe_ratio:.1f}%)\n"
+                        f"Unsafe: {num_unsafe:,} ({100*actual_unsafe_ratio:.1f}%)")
+        else:
+            info_text = (#f"Training Data\n"
+                        f"Total: {num_samples:,}\n"
+                        f"Safe: {num_safe:,} ({100*actual_safe_ratio:.1f}\\%)\n"
+                        f"Unsafe: {num_unsafe:,} ({100*actual_unsafe_ratio:.1f}\\%)")
 
         ax1.text(0.02, 0.98, info_text, transform=ax1.transAxes, fontsize=8,
                 verticalalignment='top', bbox=dict(boxstyle='round,pad=0.3',
@@ -231,17 +242,22 @@ def visualize_training_data_cli(training_data_path: Path, map_path: Optional[Pat
         for i, (bar, count) in enumerate(zip(bars, counts)):
             height = bar.get_height()
             percentage = (count / num_samples) * 100
-            ax2.text(bar.get_x() + bar.get_width()/2., height + max(counts)*0.01,
-                    f'{percentage:.1f}%',
-                    ha='center', va='bottom', fontsize=9, fontweight='bold')
+            if not isUSING_TEX:
+                ax2.text(bar.get_x() + bar.get_width()/2., height + max(counts)*0.01,
+                        f'{percentage:.1f}%',
+                        ha='center', va='bottom', fontsize=9, fontweight='bold')
+            else:
+                ax2.text(bar.get_x() + bar.get_width()/2., height + max(counts)*0.01,
+                        f'{percentage:.1f}\\%',
+                        ha='center', va='bottom', fontsize=9, fontweight='bold')
 
         # 3. Data density heatmap
         ax3 = axes[2]
 
         # Create 2D histogram for density
         h = ax3.hist2d(states[:, 0], states[:, 1], bins=20, cmap='YlOrRd', alpha=0.8)
-        ax3.set_xlabel('X Position (m)', fontsize=10)
-        ax3.set_ylabel('Y Position (m)', fontsize=10)
+        ax3.set_xlabel('X Position [m]', fontsize=10)
+        ax3.set_ylabel('Y Position [m]', fontsize=10)
         ax3.set_title('Data Density Heatmap', fontsize=11)
 
         # Add colorbar
